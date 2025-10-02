@@ -1,6 +1,6 @@
-print("Hello World")
+#funkce zkontroluje zda je cislo sude nebo liche
+#vypise
 
-# soubor: first.py
 
 # Funkce even_or_odd přijímá jedno číslo a ověří, zda je sudé nebo liché.
 # Podle výsledku vytiskne zprávu v češtině.
@@ -18,3 +18,5 @@ even_or_odd(5)
 
 # Ukázkové volání funkce s číslem 1 000 000 (očekává se "sudé")
 even_or_odd(1000000)
+
+
