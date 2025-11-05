@@ -1,3 +1,43 @@
+
+def na_sachovnici(pozice):
+    r, s = pozice
+    return 1 <= r <= 8 and 1 <= s <= 8
+
+
+def smer(krok):
+    """Vrátí normalizovaný krok (-1, 0, 1) pro každý směr."""
+    if krok == 0:
+        return 0
+    return 1 if krok > 0 else -1
+
+
+def je_cesta_volna(start, cil, obsazene_pozice):
+    """
+    Ověří, že všechna mezilehlá pole mezi startem a cílem jsou volná.
+    Start je obsazen vlastní figurou – ignorujeme ho. Cílové pole musí být řešeno mimo (nesmí být obsazené).
+    Funguje pro ortogonální i diagonální směry.
+    """
+    r0, c0 = start
+    r1, c1 = cil
+    dr = r1 - r0
+    dc = c1 - c0
+
+    stepr = smer(dr)
+    stepc = smer(dc)
+
+    # musí jít buď rovně (věž), diagonálně (střelec), nebo kombinace (dáma) – zde pouze ověříme průchozí směr
+    if not ((dr == 0) ^ (dc == 0) or abs(dr) == abs(dc)):  # xor pro rovné směry, nebo diagonála
+        return False
+
+    r, c = r0 + stepr, c0 + stepc
+    while (r, c) != (r1, c1):
+        if (r, c) in obsazene_pozice:
+            return False
+        r += stepr
+        c += stepc
+    return True
+
+
 def je_tah_mozny(figurka, cilova_pozice, obsazene_pozice):
     """
     Ověří, zda se figurka může přesunout na danou pozici.
@@ -8,20 +48,60 @@ def je_tah_mozny(figurka, cilova_pozice, obsazene_pozice):
     
     :return: True, pokud je tah možný, jinak False.
     """
+    typ = figurka.get("typ")
+    r0, c0 = figurka.get("pozice", (None, None))
+    r1, c1 = cilova_pozice
 
-    typ = figurka["typ"]
-    aktualni_pozice = figurka["pozice"]
-    radek_akt, sloupec_akt = aktualni_pozice
-    radek_cil, sloupec_cil = cilova_pozice
-
-    if typ == "pěšec":
-        # Pěšec se může pohybovat o jedno pole vpřed, pokud není obsazeno
-        if sloupec_akt == sloupec_cil and radek_cil == radek_akt + 1:
-            return cilova_pozice not in obsazene_pozice
-        # Pěšec nemůže couvat ani se pohybovat o dvě pole vpřed (pokud není na výchozí pozici)
+    # 1) Cíl na šachovnici
+    if not na_sachovnici(cilova_pozice):
         return False
 
-    # Implementace pravidel pohybu pro různé figury zde.
+    # 2) Cílová pozice musí být volná (neřešíme braní; všechny figury jsou "bílé")
+    if cilova_pozice in obsazene_pozice:
+        return False
+
+    dr = r1 - r0
+    dc = c1 - c0
+    adr = abs(dr)
+    adc = abs(dc)
+
+    # 3) Povolený tvar tahu podle typu figury
+    if typ == "pěšec":
+        # V tomto úkolu se pěšec pohybuje směrem "dolů" (zvyšuje řádek).
+        # Jeden krok vpřed, pokud je volno.
+        if dc != 0:
+            return False
+        if dr == 1:
+            return True
+        # Dvojkrok z výchozí pozice v 1. řadě (pokud jsou obě pole volná).
+        if r0 == 1 and dr == 2:
+            # zkontroluj, že mezilehlé pole je volné
+            if (r0 + 1, c0) not in obsazene_pozice:
+                return True
+        return False
+
+    elif typ == "jezdec":
+        return (adr, adc) in {(1, 2), (2, 1)}
+
+    elif typ == "věž":
+        if dr == 0 or dc == 0:
+            return je_cesta_volna((r0, c0), (r1, c1), obsazene_pozice)
+        return False
+
+    elif typ == "střelec":
+        if adr == adc and adr != 0:
+            return je_cesta_volna((r0, c0), (r1, c1), obsazene_pozice)
+        return False
+
+    elif typ == "dáma":
+        if dr == 0 or dc == 0 or adr == adc:
+            return je_cesta_volna((r0, c0), (r1, c1), obsazene_pozice)
+        return False
+
+    elif typ == "král":
+        return max(adr, adc) == 1
+
+    # Nepodporovaný typ
     return False
 
 

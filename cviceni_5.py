@@ -1,14 +1,28 @@
 import sys
 
 def  indetifikuj_cisla(data):
-    return data
+    results = []
+
+    for value in data:
+        row = []
+        for x in value.plit(" , "):
+            try:
+                x = str(int(x) + 1)
+            except ValueError:
+                pass
+        print(x)
+
+        row.append(x)
+    results.append(' , '.join(row))
+
+    return results
 
 
 if __name__ == "__main__":
     
     
-    if len(sys.argv) <=1:
-        print(f"Pouziti: {sys.argv[0]} jmeno_souboru")
+    if len(sys.argv) <= 1:
+        print(f"Pouziti: python {sys.argv[0]} jmeno_souboru")
         sys.exit()
 
     
@@ -18,7 +32,7 @@ if __name__ == "__main__":
 
     with open(file_name, "r") as file:
         for line in file:
-            print(line.strip())
+            data.append(line.strip())
 
     print(data)
 
@@ -26,8 +40,4 @@ if __name__ == "__main__":
 
     print(data)
 
-    value =  int(value)) + 1
-
-
-
-
+    #value =  int(value) + 1
