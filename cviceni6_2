@@ -1,0 +1,29 @@
+import requests
+
+def downloas_rates(url):
+
+    respose = requests.get(url)
+    if not respose.ok:
+        return None  
+    
+    data = respose.text
+
+    rates = {}
+    for line in data.split("\n")[2:]:
+        parts = line.split("|")
+        if len(parts) < 5:
+            continue
+        code = parts[3].strip()
+        rate = parts[4].strip().replace(",", ".")
+        rates[code] = float(rate)
+
+    return rates 
+
+
+if __name__ == "__main__":
+
+    url = "http://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt"
+
+    rates = downloas_rates(url)
+
+    print(rates)
