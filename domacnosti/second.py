@@ -4,10 +4,10 @@ def cislo_text(cislo):
     # funkce zkonvertuje cislo do jeho textove reprezentace
     # napr: "25" -> "dvacet pět", omezte se na cisla od 0 do 100
     cisla = ["nula", "jedna", "dva", "tri", "ctri", "pet", "sest", "sedum", "osm", "devet",
-              "deset", "jedenact", "dvanact", "trinact", "ctrnact", "patnact", "sesnact",
+              "deset", "jedenact", "dvanact", "trinact", "ctrnact", "patnact", "sestnact",
                 "sedumnact", "osumnact", "devatenact"]
     desatky = [0, 1, "dvacet", "tricet", "ctiricet", "padesat",
-                "sedesat", "sedumdesat", "osumdesat", "devatesat"]
+                "sedesat", "sedumdesat", "osumdesat", "devadesat"]
     
 
 
