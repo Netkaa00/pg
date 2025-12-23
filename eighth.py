@@ -1,11 +1,15 @@
 def bin_to_dec(binarni_cislo):
+    decimal = 0
+    mocnina = 0
+    binarni_cislo = str(binarni_cislo) 
+    
+    for bit in reversed(binarni_cislo):
+        decimal += int(bit) * (2 ** mocnina)
+        mocnina += 1
+
+    return decimal
 
 
-
-    for i in binarni_cislo.reversed():
-        decimalni_cislo += i * (2 ** index)
-        index += 1
-    return decimalni_cislo
 
 def test_bin_to_dec():
     assert bin_to_dec("0") == 0
